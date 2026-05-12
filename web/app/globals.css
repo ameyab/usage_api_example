@@ -29,6 +29,11 @@ h2 {
   font-weight: 600;
 }
 
+h3 {
+  margin: 0 0 8px;
+  font-size: 15px;
+}
+
 .muted {
   margin: 8px 0 0;
   color: #666;
@@ -93,6 +98,14 @@ td:not(:first-child) {
   text-align: right;
 }
 
+.project-row {
+  cursor: pointer;
+}
+
+.project-row:hover {
+  background: #fafafa;
+}
+
 .muted-id {
   color: #8a8a8a;
   font-size: 12px;
@@ -107,4 +120,31 @@ td:not(:first-child) {
   padding: 10px;
   font-size: 12px;
   white-space: pre-wrap;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 10;
+}
+
+.modal {
+  width: min(760px, 100%);
+  max-height: 90vh;
+  overflow-y: auto;
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #e8e8e8;
+  padding: 16px;
+}
+
+.modal-section {
+  margin-top: 14px;
+  border-top: 1px solid #f0f0f0;
+  padding-top: 12px;
 }

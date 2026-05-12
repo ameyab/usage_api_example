@@ -1,20 +1,9 @@
 import { getMonthlyInvoices } from "@/lib/usage-api";
+import InvoiceTable from "@/app/components/invoice-table";
 
 type PageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
-
-function formatUsd(value: number): string {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    maximumFractionDigits: 2,
-  }).format(value);
-}
-
-function formatCount(value: number): string {
-  return new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(value);
-}
 
 export default async function Home({ searchParams }: PageProps) {
   const params = await searchParams;
@@ -29,7 +18,6 @@ export default async function Home({ searchParams }: PageProps) {
     loadError = error instanceof Error ? error.message : "Unknown error";
   }
 
-  const grandTotal = invoices.reduce((sum, invoice) => sum + invoice.total, 0);
   const isAuthError = (loadError ?? "").includes("401");
 
   return (
@@ -59,47 +47,7 @@ export default async function Home({ searchParams }: PageProps) {
           )}
         </>
       ) : (
-        <>
-          <p className="total">Total invoice ({months} months): {formatUsd(grandTotal)}</p>
-          {invoices.map((invoice) => (
-            <section className="card" key={invoice.monthStart}>
-              <div className="row">
-                <h2>{invoice.monthLabel}</h2>
-                <strong>{formatUsd(invoice.total)}</strong>
-              </div>
-
-              {invoice.projects.length === 0 ? (
-                <p className="muted">No usage</p>
-              ) : (
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Project</th>
-                      <th>GB</th>
-                      <th>Scorer Volume</th>
-                      <th>Span Volume</th>
-                      <th>Invoice</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {invoice.projects.map((project) => (
-                      <tr key={`${invoice.monthStart}-${project.projectId}`}>
-                        <td>
-                          <div>{project.projectName}</div>
-                          <div className="muted-id">{project.projectId}</div>
-                        </td>
-                        <td>{project.usageGb.toFixed(3)}</td>
-                        <td>{formatCount(project.scoreCount)}</td>
-                        <td>{formatCount(project.spanCount)}</td>
-                        <td>{formatUsd(project.invoiceUsd)}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              )}
-            </section>
-          ))}
-        </>
+        <InvoiceTable invoices={invoices} months={months} />
       )}
     </main>
   );
